@@ -7,7 +7,7 @@ const notify = text => {
   console.log('[华住会签到] ' + text);
   $notification.post('华住会签到', '', text);
 };
-console.log('[华住会签到 v20261031.2] 模式：' + (typeof $request !== 'undefined' ? '获取凭据' : '定时签到'));
+console.log('[华住会签到 v20261031.3] 模式：' + (typeof $request !== 'undefined' ? '获取凭据' : '定时签到'));
 function headersForSign(source) {
   const result = {};
   for (const key of Object.keys(source || {})) {
@@ -35,7 +35,11 @@ function headersForSign(source) {
   const url = 'https://appgw.huazhu.com/game/sign_in?date=' + Math.floor(Date.now() / 1000);
   const response = await new Promise((resolve, reject) => {
     $httpClient.get({url, headers, timeout: 20}, (error, response, body) => {
-      if (error) return reject(new Error('网络请求失败，请稍后重试'));
+      if (error) {
+        const reason = typeof error === 'string' ? error : (error.message || error.error || error.code || '未知网络错误');
+        return reject(new Error('网络请求失败：' + String(reason)));
+      }
+      console.log('[华住会签到] HTTP 状态：' + (response ? (response.status || response.statusCode || '未知') : '无响应'));
       resolve({response, body});
     });
   });
