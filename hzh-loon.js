@@ -3,7 +3,11 @@
  * 定时执行同一文件。凭据仅保存在 Loon 本机，请勿分享。
  */
 const KEY = 'HZH_NEW_SIGN_HEADERS';
-const notify = text => $notification.post('华住会签到', '', text);
+const notify = text => {
+  console.log('[华住会签到] ' + text);
+  $notification.post('华住会签到', '', text);
+};
+console.log('[华住会签到 v20261031.2] 模式：' + (typeof $request !== 'undefined' ? '获取凭据' : '定时签到'));
 function headersForSign(source) {
   const result = {};
   for (const key of Object.keys(source || {})) {
